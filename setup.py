@@ -1,17 +1,15 @@
-from setuptools import setup, Extension
+from setuptools import setup
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 
 class my_build_ext(build_ext):
     def build_extensions(self):
         if self.compiler.compiler_type == "unix":
             for e in self.extensions:
-                if 'arm' not in self.compiler.archiver:
-                    e.extra_compile_args = ["-std=c++17", "-msse4.2", "-mavx2"]
-                else:
-                    e.extra_compile_args = ["-std=c++17"]
+                # ARMアーキテクチャの場合には特定のフラグを追加しない
+                e.extra_compile_args = ["-std=c++17"]
         elif self.compiler.compiler_type == "msvc":
             for e in self.extensions:
-                e.extra_compile_args = ["/std:c++17", "/arch:AVX2"]
+                e.extra_compile_args = ["/std:c++17"]
 
         build_ext.build_extensions(self)
 
